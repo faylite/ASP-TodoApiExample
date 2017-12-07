@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace TodoApp
 {
@@ -24,6 +25,16 @@ namespace TodoApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Title = "Todo Api",
+                    Version = "v1",
+                    Description = "A simple example project for ASP.NET Core Web Apis"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,6 +43,18 @@ namespace TodoApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseSwagger(c =>
+                {
+                    c.RouteTemplate = "api/docs/{documentName}/docs.json";
+                });
+
+                app.UseSwaggerUI(c =>
+                {
+                    c.RoutePrefix = "api-docs";
+                    c.DocumentTitle("Todo API Docs");
+                    c.SwaggerEndpoint("/api/docs/v1/docs.json", "Todo API v1");
+                });
             }
 
             app.UseMvc();
