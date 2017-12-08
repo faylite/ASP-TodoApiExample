@@ -12,7 +12,7 @@ namespace TodoApp.Controllers
     /// <summary>
     /// Controller for the Todo items
     /// </summary>
-    [Produces("application/json")]
+    [Produces("application/json", "application/xml")]
     [Route("api/Todo")]
     public class TodoController : Controller
     {
