@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +42,12 @@ namespace TodoApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
-            services.AddMvc();
+            services.AddMvc(opt =>
+            {
+                // Add support for XML response data by specifying application/xml in the Accept header,
+                // defaults to json if no Accept override is specified in the http client
+                opt.OutputFormatters.Add(new XmlSerializerOutputFormatter());
+            });
 
             services.AddSwaggerGen(c =>
             {
