@@ -9,12 +9,19 @@ using TodoApp.Models;
 
 namespace TodoApp.Controllers
 {
+    /// <summary>
+    /// Controller for the Todo items
+    /// </summary>
     [Produces("application/json")]
     [Route("api/Todo")]
     public class TodoController : Controller
     {
         private readonly TodoContext _context;
 
+        /// <summary>
+        /// Controller for the Todo items
+        /// </summary>
+        /// <param name="context"></param>
         public TodoController(TodoContext context)
         {
             _context = context;
