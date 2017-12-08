@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -32,12 +33,18 @@ namespace TodoApp
 
             services.AddSwaggerGen(c =>
             {
+                // Define some basic meta data for the swagger output
                 c.SwaggerDoc("v1", new Info
                 {
                     Title = "Todo Api",
                     Version = "v1",
                     Description = "A simple example project for ASP.NET Core Web Apis"
                 });
+
+                // Requires that you add this to your TodoApp.csproj:
+                // <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+                // It will include all xml style comments in the swagger output documentation
+                c.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TodoApp.xml"));
             });
         }
 
@@ -48,11 +55,14 @@ namespace TodoApp
             {
                 app.UseDeveloperExceptionPage();
 
+                // Setup swagger for development only, override the default route to merge it with the api routes,
+                // "documentName" will be inserted by swagger and is required, in practive it will be the api version tag
                 app.UseSwagger(c =>
                 {
                     c.RouteTemplate = "api/docs/{documentName}/docs.json";
                 });
 
+                // Setup swagger ui on the domain/api-docs route
                 app.UseSwaggerUI(c =>
                 {
                     c.RoutePrefix = "api-docs";
