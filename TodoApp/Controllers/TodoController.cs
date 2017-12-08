@@ -29,24 +29,40 @@ namespace TodoApp.Controllers
             }
         }
 
-        // GET: api/Todo
+        /// <summary>
+        /// List all Todo items
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<TodoItem>), 200)]
         public IEnumerable<TodoItem> GetAll()
         {
             return _context.TodoItems.ToList();
         }
 
-        // GET: api/Todo/5
+        /// <summary>
+        /// Get the Todo item with the provided id
+        /// </summary>
+        /// <param name="id">Id of Todo item</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetTodo")]
+        [ProducesResponseType(typeof(TodoItem), 200)]
+        [ProducesResponseType(typeof(void), 404)]
         public IActionResult Get(int id)
         {
             var item = _context.TodoItems.FirstOrDefault(x => x.Id == id);
             if (item == null) return NotFound();
             return new ObjectResult(item);
         }
-        
-        // POST: api/Todo
+
+        /// <summary>
+        /// Create a new Todo item
+        /// </summary>
+        /// <param name="item">Todo Item object</param>
+        /// <returns></returns>
         [HttpPost]
+        [ProducesResponseType(typeof(TodoItem), 201)]
+        [ProducesResponseType(typeof(void), 400)]
         public IActionResult Create([FromBody] TodoItem item)
         {
             if (item == null) return BadRequest();
@@ -54,9 +70,17 @@ namespace TodoApp.Controllers
             _context.SaveChanges();
             return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
         }
-        
-        // PUT: api/Todo/5
+
+        /// <summary>
+        /// Update a Todo Item
+        /// </summary>
+        /// <param name="id">Id of item to update</param>
+        /// <param name="item">Todo item object with updated data</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(void), 404)]
+        [ProducesResponseType(typeof(void), 400)]
         public IActionResult Update(int id, [FromBody] TodoItem item)
         {
             if (item == null || item.Id != id) return BadRequest();
@@ -72,8 +96,14 @@ namespace TodoApp.Controllers
             return  new NoContentResult();
         }
         
-        // DELETE: api/ApiWithActions/5
+        /// <summary>
+        /// Delete a todo item
+        /// </summary>
+        /// <param name="id">Id of todo item to delete</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(void), 201)]
+        [ProducesResponseType(typeof(void), 404)]
         public IActionResult Delete(int id)
         {
             var todo = _context.TodoItems.FirstOrDefault(x => x.Id == id);
